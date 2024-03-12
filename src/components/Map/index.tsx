@@ -1,12 +1,22 @@
-import { Children, cloneElement, isValidElement, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
-type MapProps = {
-  children?: React.ReactNode;
+type Props = {
+  markers: google.maps.LatLng[];
 };
 
-export const Map: React.FC<MapProps> = ({ children }: MapProps): JSX.Element => {
+export const Map = ({ markers }: Props): JSX.Element => {
   const ref = useRef<HTMLDivElement>(null);
   const [map, setMap] = useState<google.maps.Map>();
+
+  useEffect(() => {
+    if (!map) return;
+
+    {
+      markers.map((marker) => {
+        new google.maps.Marker({ position: new google.maps.LatLng(marker.lng(), marker.lat()), map, optimized: true });
+      });
+    }
+  }, [map, markers]);
 
   useEffect(() => {
     if (ref.current && !map) {
@@ -19,17 +29,5 @@ export const Map: React.FC<MapProps> = ({ children }: MapProps): JSX.Element => 
     }
   }, [ref, map]);
 
-  return (
-    <>
-      <div ref={ref} className='map' />
-      {Children.map(children, (child) => {
-        if (isValidElement(child)) {
-          // set the map prop on the child component
-          // @ts-expect-error: disabled TypeScript for the needs of the code from the documentation
-          return cloneElement(child, { map });
-        }
-        return child;
-      })}
-    </>
-  );
+  return <div ref={ref} className='map' />;
 };
