@@ -45,4 +45,18 @@
       }
     }
   }
+
+  .clear-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 8px;
+    border: 2px solid #252525;
+    cursor: pointer;
+
+    &:hover {
+      transform: scale(1.05);
+      transition: 0.25s;
+    }
+  }
 }

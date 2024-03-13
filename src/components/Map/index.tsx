@@ -15,6 +15,14 @@ export const Map = ({ markers }: Props): JSX.Element => {
       markers.map((marker) => {
         new google.maps.Marker({ position: new google.maps.LatLng(marker.lng(), marker.lat()), map, optimized: true });
       });
+
+      if (markers.length) {
+        map.panTo(new google.maps.LatLng(markers[markers.length - 1].lng(), markers[markers.length - 1].lat()));
+
+        setTimeout(() => {
+          map.setZoom(6);
+        }, 300);
+      }
     }
   }, [map, markers]);
 
