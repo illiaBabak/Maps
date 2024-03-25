@@ -1,39 +1,42 @@
 import { useEffect, useRef, useState } from 'react';
 
+const ZOOM_DELAY = 300;
+const ZOOM_LEVEL = 6;
+
+const MAP_OPTIONS = {
+  center: { lat: 0, lng: 0 },
+  zoom: 2,
+};
+
 type Props = {
   markers: google.maps.LatLng[];
 };
+
+const getCoords = (marker: google.maps.LatLng) => new google.maps.LatLng(marker.lng(), marker.lat());
 
 export const Map = ({ markers }: Props): JSX.Element => {
   const ref = useRef<HTMLDivElement>(null);
   const [map, setMap] = useState<google.maps.Map>();
 
   useEffect(() => {
-    if (!map) return;
+    if (!map || !markers.length) return;
 
-    {
-      markers.map((marker) => {
-        new google.maps.Marker({ position: new google.maps.LatLng(marker.lng(), marker.lat()), map, optimized: true });
-      });
+    markers.forEach((marker) => {
+      new google.maps.Marker({ position: getCoords(marker), map, optimized: true });
+    });
 
-      if (markers.length) {
-        map.panTo(new google.maps.LatLng(markers[markers.length - 1].lng(), markers[markers.length - 1].lat()));
+    map.panTo(getCoords(markers[markers.length - 1]));
 
-        setTimeout(() => {
-          map.setZoom(6);
-        }, 300);
-      }
-    }
+    const timeoutId = setTimeout(() => {
+      map.setZoom(ZOOM_LEVEL);
+    }, ZOOM_DELAY);
+
+    return () => clearTimeout(timeoutId);
   }, [map, markers]);
 
   useEffect(() => {
     if (ref.current && !map) {
-      const options = {
-        center: { lat: 0, lng: 0 },
-        zoom: 2,
-      };
-
-      setMap(new window.google.maps.Map(ref.current, options));
+      setMap(new window.google.maps.Map(ref.current, MAP_OPTIONS));
     }
   }, [ref, map]);
 
