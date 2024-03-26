@@ -10,13 +10,21 @@ const MAP_OPTIONS = {
 
 type Props = {
   markers: google.maps.LatLng[];
+  setMarkers: React.Dispatch<React.SetStateAction<google.maps.LatLng[]>>;
 };
 
 const getCoords = (marker: google.maps.LatLng) => new google.maps.LatLng(marker.lng(), marker.lat());
 
-export const Map = ({ markers }: Props): JSX.Element => {
+export const Map = ({ markers, setMarkers }: Props): JSX.Element => {
   const ref = useRef<HTMLDivElement>(null);
   const [map, setMap] = useState<google.maps.Map>();
+
+  const clearMarkers = () => {
+    setMarkers([]);
+    setMap(undefined);
+    map?.setZoom(MAP_OPTIONS.zoom);
+    map?.panTo(MAP_OPTIONS.center);
+  };
 
   useEffect(() => {
     if (!map || !markers.length) return;
@@ -35,10 +43,15 @@ export const Map = ({ markers }: Props): JSX.Element => {
   }, [map, markers]);
 
   useEffect(() => {
-    if (ref.current && !map) {
-      setMap(new window.google.maps.Map(ref.current, MAP_OPTIONS));
-    }
+    if (ref.current && !map) setMap(new window.google.maps.Map(ref.current, MAP_OPTIONS));
   }, [ref, map]);
 
-  return <div ref={ref} className='map' />;
+  return (
+    <>
+      <div ref={ref} className='map' />
+      <div className='clear-markers-btn' onClick={clearMarkers}>
+        <img src='https://cdn1.iconfinder.com/data/icons/vibrancie-map/30/map_025-location-marker-close-pin-delete-remove-512.png' />
+      </div>
+    </>
+  );
 };

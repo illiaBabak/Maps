@@ -7,7 +7,7 @@ export const App = (): JSX.Element => {
 
   return (
     <div className='container'>
-      <Map markers={markers} />
+      <Map markers={markers} setMarkers={setMarkers} />
       <Form setMarkers={setMarkers} />
     </div>
   );

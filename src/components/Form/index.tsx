@@ -10,8 +10,11 @@ export const Form = ({ setMarkers }: Props): JSX.Element => {
     apiKey,
   });
   const [inputValues, setInputValues] = useState<ParsedFormData>(DEFAULT_FORM_VALUE);
+  const [searchVal, setSearchVal] = useState('');
 
   const clearForm = () => setInputValues(DEFAULT_FORM_VALUE);
+
+  const clearSearch = () => setSearchVal('');
 
   const handleInputChange = (val: string, fieldName: string) => {
     setInputValues((prevState) => ({
@@ -46,7 +49,23 @@ export const Form = ({ setMarkers }: Props): JSX.Element => {
       <div className='search'>
         <div className='form-col'>
           <h1>Search</h1>
-          <input onChange={(e) => getPlacePredictions({ input: e.currentTarget.value })} />
+          <input
+            className='search-input'
+            onChange={(e) => {
+              setSearchVal(e.currentTarget.value);
+              getPlacePredictions({ input: e.currentTarget.value });
+            }}
+            value={searchVal}
+          />
+          <div
+            className='clear-search-btn'
+            onClick={() => {
+              clearSearch();
+              getPlacePredictions({ input: '' });
+            }}
+          >
+            x
+          </div>
         </div>
 
         <div className='list'>
