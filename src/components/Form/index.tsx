@@ -80,7 +80,7 @@ export const Form = ({ setMarkers }: Props): JSX.Element => {
       <div className='info'>
         <h2>Info</h2>
 
-        {FIELDS_ARR.map(([_, localName], index) => (
+        {FIELDS_ARR.map(([, localName], index) => (
           <div className='form-col' key={`${index}-${localName}`}>
             <h4>{capitalize(localName)}</h4>
             <input

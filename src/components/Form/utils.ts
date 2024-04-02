@@ -7,7 +7,7 @@ export const parseFormData = (placeDetails: google.maps.places.PlaceResult | und
 
   FIELDS_ARR.forEach(([googleFieldName, localFieldName]) => {
     const searchedVal = address_components?.find((obj) => obj.types.includes(googleFieldName))?.long_name;
-    if (searchedVal) parsedData[localFieldName] = searchedVal;
+    parsedData[localFieldName] = searchedVal ?? '';
   });
 
   return parsedData;
